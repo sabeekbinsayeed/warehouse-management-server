@@ -13,11 +13,11 @@ const port = process.env.PORT || 5000
 
 
 app.get('/', (req, res) => {
-    res.send('Alhamdulillah, it is working new one good')
+    res.send('Alhamdulillah, request send')
 })
 
 app.listen(port, () => {
-    console.log('listen hosce')
+    console.log('listening to port')
 })
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.pyiq7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
