@@ -29,18 +29,39 @@ async function run() {
     try {
         await client.connect();
         const productCollection = client.db("warehouse").collection("products");
-        app.get('/products', async (req, res) => {
+        const taskCollection = client.db("warehouse").collection("taskCollection");
+
+        app.get('/task', async (req, res) => {
             const query = {};
-            const cursor = productCollection.find(query);
-            const products = await cursor.toArray();
-            res.send(products);
+            const cursor = taskCollection.find(query);
+            const tasks = await cursor.toArray();
+            res.send(tasks);
         });
-        // app.get('/products/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     const result = await productCollection.findOne(query);
-        //     res.send(result);
-        // });
+        app.delete('/task/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await taskCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+
+        app.post('/task', async (req, res) => {
+
+            const newTask = req.body;
+
+
+
+            const result = await taskCollection.insertOne(newTask);
+
+            res.send({ result: "sucess" })
+            console.log(`A document was inserted with the _id: ${result.insertedId}`);
+
+
+
+        })
+
+
         app.get('/products', async (req, res) => {
             const email = req.query.email;
             console.log(email)
