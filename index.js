@@ -27,7 +27,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        await client.connect();
+        client.connect();
         const productCollection = client.db("warehouse").collection("products");
         const taskCollection = client.db("warehouse").collection("taskCollection");
 
@@ -36,6 +36,12 @@ async function run() {
             const cursor = taskCollection.find(query);
             const tasks = await cursor.toArray();
             res.send(tasks);
+        });
+
+
+        app.get('/tasks', async (req, res) => {
+
+            res.send({ "id": 1 });
         });
         app.delete('/task/:id', async (req, res) => {
             const id = req.params.id;
@@ -63,14 +69,26 @@ async function run() {
 
 
         app.get('/products', async (req, res) => {
-            const email = req.query.email;
-            console.log(email)
-            const query = { email: email };
+            // const email = req.query.email;
+            // console.log(email)
+            // const query = { email: email };
+
             // const result = await productCollection.findOne(query);
             // res.send(result)
-            const cursor = productCollection.find(query);
-            const products = await cursor.toArray();
-            res.send(products);
+
+            try {
+
+                const query = {}
+                const cursor = productCollection.find(query);
+                const products = await cursor.toArray();
+                res.send(products);
+            }
+            catch (err) {
+
+                res.json({ message: 'error' })
+            }
+
+
         });
 
         app.delete('/products/:id', async (req, res) => {
@@ -119,10 +137,17 @@ async function run() {
         })
 
         app.get('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const products = await productCollection.findOne(query);
-            res.send(products);
+
+            try {
+                const id = req.params.id;
+                const query = { _id: ObjectId(id) };
+                const products = await productCollection.findOne(query);
+                res.send(products);
+            }
+            catch {
+                res.send({})
+            }
+
         });
 
 
